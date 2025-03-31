@@ -1,0 +1,4 @@
+package intelligent.project.principle.core.normal.newTransaction;
+
+interface IntelligentPrincipleCoreNormalNewTransactionService extends IntelligentPrincipleCoreNormalNewTransactionGlobalService {
+}

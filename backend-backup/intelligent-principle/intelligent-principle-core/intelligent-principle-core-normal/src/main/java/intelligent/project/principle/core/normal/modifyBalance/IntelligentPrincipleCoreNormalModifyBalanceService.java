@@ -1,0 +1,4 @@
+package intelligent.project.principle.core.normal.modifyBalance;
+
+interface IntelligentPrincipleCoreNormalModifyBalanceService extends IntelligentPrincipleCoreNormalModifyBalanceGlobalService {
+}
