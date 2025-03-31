@@ -64,19 +64,19 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
 
-    if (!_isAuthenticated) {
-      return MaterialApp(
-        home: Scaffold(
-          backgroundColor: Colors.white,
-          body: Center(
-            child: ElevatedButton(
-              onPressed: _authenticate,
-              child: const Text('Unlock with Fingerprint'),
-            ),
-          ),
-        ),
-      );
-    }
+    // if (!_isAuthenticated) {
+    //   return MaterialApp(
+    //     home: Scaffold(
+    //       backgroundColor: Colors.white,
+    //       body: Center(
+    //         child: ElevatedButton(
+    //           onPressed: _authenticate,
+    //           child: const Text('Unlock with Fingerprint'),
+    //         ),
+    //       ),
+    //     ),
+    //   );
+    // }
 
     return MaterialApp(
       color: Colors.black,
