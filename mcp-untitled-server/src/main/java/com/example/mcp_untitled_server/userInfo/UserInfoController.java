@@ -22,4 +22,9 @@ class UserInfoController {
     public UserInfoDTO modifyAccount(@RequestBody UserInfoDTO modifiedAccount) {
         return userInfoService.modifyAccount(modifiedAccount);
     }
+
+    @GetMapping
+    public UserInfoDTO getAccountInfoById(@RequestParam("userInfoId") Long userInfoId) {
+        return userInfoService.getAccountInfoById(userInfoId);
+    }
 }

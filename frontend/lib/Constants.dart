@@ -27,4 +27,6 @@ class Constants {
   static String PICTURE_PERSON = "assets/images/person.jpg";
 
   static Color COLOR_STRONG_BLUE = Color.fromARGB(255, 0, 122, 255);
+
+  static final String baseUrl = 'http://10.0.2.2:8081';
 }

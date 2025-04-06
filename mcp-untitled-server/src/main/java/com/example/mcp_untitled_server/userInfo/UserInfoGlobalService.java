@@ -4,4 +4,6 @@ public interface UserInfoGlobalService {
     UserInfoDTO addNewAccount(UserInfoDTO newUser);
 
     UserInfoDTO modifyAccount(UserInfoDTO modifiedAccount);
+
+    UserInfoDTO getAccountInfoById(Long userInfoId);
 }

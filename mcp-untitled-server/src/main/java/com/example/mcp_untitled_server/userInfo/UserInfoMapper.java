@@ -1,8 +1,6 @@
 package com.example.mcp_untitled_server.userInfo;
 
-import org.mapstruct.CollectionMappingStrategy;
-import org.mapstruct.Mapper;
-import org.mapstruct.NullValueCheckStrategy;
+import org.mapstruct.*;
 import org.mapstruct.factory.Mappers;
 
 @Mapper(nullValueCheckStrategy = NullValueCheckStrategy.ALWAYS, collectionMappingStrategy = CollectionMappingStrategy.ADDER_PREFERRED)
@@ -12,4 +10,7 @@ public interface UserInfoMapper {
     UserInfoDTO toDto(UserInfo entity);
 
     UserInfo toEntity(UserInfoDTO object);
+
+    @Mapping(target = "id", ignore = true)
+    void updateEntityFromDto(@MappingTarget UserInfo entity, UserInfoDTO dto);
 }
