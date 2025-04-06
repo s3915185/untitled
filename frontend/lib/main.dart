@@ -25,6 +25,7 @@ void main() {
 
   runApp(const MyApp());
 }
+
 final GlobalKey<_MyHomePageState> homePageKey = GlobalKey<_MyHomePageState>();
 
 class MyApp extends StatefulWidget {
@@ -63,7 +64,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-
     // if (!_isAuthenticated) {
     //   return MaterialApp(
     //     home: Scaffold(
@@ -112,12 +112,20 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     dateStart = DateTimeUtils.getFirstDateOfMonth(
-      DateTime.now().year,
-      DateTime.now().month,
+      DateTime
+          .now()
+          .year,
+      DateTime
+          .now()
+          .month,
     );
     dateEnd = DateTimeUtils.getLastDateOfMonth(
-      DateTime.now().year,
-      DateTime.now().month,
+      DateTime
+          .now()
+          .year,
+      DateTime
+          .now()
+          .month,
     );
 
     _screens = {
