@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:untitled/dto/UserTransactionCalendarDTO.dart';
 import 'package:untitled/dto/UserTransactionDTO.dart';
 import 'package:untitled/screens/reportsService.dart';
 import 'package:untitled/widgets/calendar/EnhancedCalendar.dart';
@@ -22,35 +23,76 @@ class ReportScreen extends StatefulWidget {
 }
 
 class _ReportScreenState extends State<ReportScreen> {
-  late List<UserTransactionDTO>? _userTransactionList;
   bool _isLoading = true;
 
-  late List<TransactionElement> data = [];
+  late List<TransactionElement> _userTransactionListData = [];
+  late Map<int, double> _userTransactionCalendarListData = {
+    // 1: 200,
+    // 6: -34.21,
+    // 7: 392.12,
+    // 8: -23.28,
+    // 9: -239.32,
+    // 11: 403.23,
+    // 12: 200,
+    // 16: -34.21,
+    // 17: 392.12,
+    // 18: -23.28,
+    // 19: -239.32,
+    // 21: 403.23,
+    // 23: -34.21,
+    // 24: 392.12,
+    // 26: -23.28,
+    // 27: -239.32,
+    // 29: 403.23,
+  };
 
   DateTime? selectedDate;
   late DateTime currentStart;
   late DateTime currentEnd;
+  final homeService = ReportService(ApiClient());
 
-  Future<void> _fetchUserTransaction() async {
-    final homeService = ReportService(ApiClient());
+  Future<void> _getUserTransactions() async {
 
     try {
-      final userTransactionList = await homeService.getUserTransactionsByUserInfoId(1);
+      final userTransactionList = await homeService
+          .getUserTransactionsByUserInfoId(1, _getDate(true)!, _getDate(false)!);
       setState(() {
-        _userTransactionList = userTransactionList;
-        data = _userTransactionList!.map((element) {
-          return TransactionElement(
-            element.localDateTime,
-            element.name,
-            element.transactionCategory,
-            element.amount,
-          );
-        }).toList();
-        _isLoading = false;
+        _userTransactionListData =
+            userTransactionList!.map((element) {
+              return TransactionElement(
+                element.localDate,
+                element.name,
+                element.transactionCategory,
+                element.amount,
+              );
+            }).toList();
       });
     } catch (e) {
       setState(() {
-        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _getEachDayUpAndDownInfo() async {
+    try {
+      final userTransactionCalendarList = await homeService
+          .getEachDayUpAndDownInfoByUserInfoIdAndPeriods(
+            1,
+            currentStart,
+            currentEnd,
+          );
+      setState(() {
+        _userTransactionCalendarListData = Map.fromEntries(
+          userTransactionCalendarList!.map(
+            (element) => MapEntry(
+              element.date!.day,
+              element.upAmount! + element.downAmount!,
+            ),
+          ),
+        );
+      });
+    } catch (e) {
+      setState(() {
       });
     }
   }
@@ -60,7 +102,8 @@ class _ReportScreenState extends State<ReportScreen> {
     super.initState();
     currentStart = widget.dateStart;
     currentEnd = widget.dateEnd;
-    _fetchUserTransaction();
+    _getUserTransactions();
+    _getEachDayUpAndDownInfo();
   }
 
   void _updateSelectedDate(DateTime? newDate) {
@@ -70,6 +113,7 @@ class _ReportScreenState extends State<ReportScreen> {
       } else {
         selectedDate = newDate;
       }
+      _getUserTransactions();
     });
   }
 
@@ -85,6 +129,9 @@ class _ReportScreenState extends State<ReportScreen> {
     setState(() {
       currentStart = start!;
       currentEnd = end!;
+      selectedDate = null;
+      _getUserTransactions();
+      _getEachDayUpAndDownInfo();
     });
   }
 
@@ -100,8 +147,14 @@ class _ReportScreenState extends State<ReportScreen> {
             selectedDate: selectedDate,
             onPeriodChanged: _updateMonth,
             onDateSelectionChanged: _updateSelectedDate,
+            data: _userTransactionCalendarListData,
           ),
-          TransactionList(dateStart: _getDate(true), dateEnd: _getDate(false), data: data, isEdit: false),
+          TransactionList(
+            dateStart: _getDate(true),
+            dateEnd: _getDate(false),
+            data: _userTransactionListData,
+            isEdit: false,
+          ),
         ],
       ),
     );

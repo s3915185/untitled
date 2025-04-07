@@ -43,4 +43,9 @@ class DateTimeUtils {
     DateFormat dateFormat = DateFormat("dd-MMM-yyyy");
     return dateFormat.format(dateTime);
   }
+
+  static String dateTimeApiFormat(DateTime dateTime) {
+    DateFormat dateFormat = DateFormat("yyyy-MM-dd");
+    return dateFormat.format(dateTime);
+  }
 }

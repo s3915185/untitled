@@ -1,11 +1,5 @@
 package com.example.mcp_untitled_server.userConfiguration;
-
-import com.example.mcp_untitled_server.utils.CategoriesListConverter;
-import jakarta.persistence.*;
 import lombok.*;
-
-import java.math.BigDecimal;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Builder

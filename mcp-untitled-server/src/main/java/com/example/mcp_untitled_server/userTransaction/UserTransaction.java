@@ -1,11 +1,10 @@
 package com.example.mcp_untitled_server.userTransaction;
 
-import com.example.mcp_untitled_server.enums.TransactionCategory;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Data
 @Entity
@@ -33,5 +32,5 @@ class UserTransaction {
     private String name;
 
     @Column(name = "LOCAL_DATE_TIME")
-    private LocalDateTime localDateTime;
+    private LocalDate localDate;
 }

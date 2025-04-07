@@ -9,13 +9,14 @@ class EnhancedCalendar extends StatefulWidget {
   final DateTime dateStart;
   final DateTime dateEnd;
   final DateTime? selectedDate;
+  final Map<int, double> data;
   final Function(DateTime?, DateTime?) onPeriodChanged;
   final Function(DateTime?) onDateSelectionChanged;
 
   const EnhancedCalendar({
     Key? key,
     required this.dateStart,
-    required this.dateEnd, this.selectedDate,required this.onPeriodChanged, required this.onDateSelectionChanged,
+    required this.dateEnd, this.selectedDate,required this.onPeriodChanged, required this.onDateSelectionChanged, required this.data,
   }) : super(key: key);
 
   @override
@@ -41,25 +42,7 @@ class _EnhancedCalendarState extends State<EnhancedCalendar> {
         ),
         Calendar(
           currentMonth: widget.dateStart,
-          data: {
-            1: 200,
-            6: -34.21,
-            7: 392.12,
-            8: -23.28,
-            9: -239.32,
-            11: 403.23,
-            12: 200,
-            16: -34.21,
-            17: 392.12,
-            18: -23.28,
-            19: -239.32,
-            21: 403.23,
-            23: -34.21,
-            24: 392.12,
-            26: -23.28,
-            27: -239.32,
-            29: 403.23,
-          },
+          data: widget.data,
           onMonthChanged: _updateOneMonth,
           selectedDate: widget.selectedDate,
           onDateSelectionChanged: widget.onDateSelectionChanged,

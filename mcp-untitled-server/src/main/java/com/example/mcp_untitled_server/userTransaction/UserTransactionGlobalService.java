@@ -1,8 +1,8 @@
 package com.example.mcp_untitled_server.userTransaction;
 
 import org.apache.commons.lang3.tuple.Pair;
-import org.springframework.ai.tool.annotation.Tool;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Set;
 
@@ -16,4 +16,6 @@ public interface UserTransactionGlobalService {
     List<UserTransactionDTO> modifyListOfTransactions(List<UserTransactionDTO> modifiedTransactionDTOList);
     boolean deleteOneTransactionById(Long id);
     List<Pair<Long, Boolean>> deleteListOfTransactionsByIds(Set<Long> ids);
+    List<UserTransactionCalendarDTO> getEachDayUpAndDownInfoByUserInfoIdAndPeriods(Long userInfoId, LocalDate dateStart, LocalDate dateEnd);
+    List<UserTransactionDTO> getListOfTransactionByUserInfoIdAndPeriods(Long userInfoId, LocalDate dateStart, LocalDate dateEnd);
 }

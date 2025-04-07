@@ -3,6 +3,7 @@ package com.example.mcp_untitled_server.userTransaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -23,5 +24,29 @@ class UserTransactionController {
     @GetMapping
     public List<UserTransactionDTO> getListOfTransactionsByUserInfoId(@RequestParam("userInfoId") Long userInfoId) {
         return userTransactionService.getListOfTransactionsByUserInfoId(userInfoId);
+    }
+
+    @GetMapping("/calendar-period")
+    public  List<UserTransactionCalendarDTO> getEachDayUpAndDownInfoByUserInfoIdAndPeriods(
+            @RequestParam("userInfoId") Long userInfoId,
+            @RequestParam("dateStart") String dateStartStr,
+            @RequestParam("dateEnd") String dateStartEnd) {
+
+        LocalDate dateStart = LocalDate.parse(dateStartStr);
+        LocalDate dateEnd = LocalDate.parse(dateStartEnd);
+
+        return userTransactionService.getEachDayUpAndDownInfoByUserInfoIdAndPeriods(userInfoId, dateStart, dateEnd);
+    }
+
+    @GetMapping("/transaction-period")
+    public List<UserTransactionDTO> getListOfTransactionByUserInfoIdAndPeriods(
+            @RequestParam("userInfoId") Long userInfoId,
+            @RequestParam("dateStart") String dateStartStr,
+            @RequestParam("dateEnd") String dateStartEnd) {
+
+        LocalDate dateStart = LocalDate.parse(dateStartStr);
+        LocalDate dateEnd = LocalDate.parse(dateStartEnd);
+
+        return userTransactionService.getListOfTransactionByUserInfoIdAndPeriods(userInfoId, dateStart, dateEnd);
     }
 }

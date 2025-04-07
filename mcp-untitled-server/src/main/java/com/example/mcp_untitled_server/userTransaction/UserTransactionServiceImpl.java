@@ -6,6 +6,7 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -113,5 +114,16 @@ class UserTransactionServiceImpl implements UserTransactionService {
     public List<Pair<Long, Boolean>> deleteListOfTransactionsByIds(Set<Long> ids) {
         userTransactionRepository.deleteAllById(ids);
         return Collections.emptyList();
+    }
+
+    @Override
+    public List<UserTransactionCalendarDTO> getEachDayUpAndDownInfoByUserInfoIdAndPeriods(Long userInfoId, LocalDate dateStart, LocalDate dateEnd) {
+        return userTransactionRepository.getEachDayUpAndDownInfoByUserInfoIdAndPeriods(userInfoId, dateStart, dateEnd);
+    }
+
+    @Override
+    public List<UserTransactionDTO> getListOfTransactionByUserInfoIdAndPeriods(Long userInfoId, LocalDate dateStart, LocalDate dateEnd) {
+        return userTransactionRepository.getListOfTransactionByUserInfoIdAndPeriods(userInfoId, dateStart, dateEnd)
+                .stream().map(UserTransactionMapper.INSTANCE::toDto).toList();
     }
 }

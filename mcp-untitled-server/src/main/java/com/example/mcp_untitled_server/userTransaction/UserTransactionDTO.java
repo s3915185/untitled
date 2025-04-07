@@ -3,7 +3,7 @@ package com.example.mcp_untitled_server.userTransaction;
 import lombok.*;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Builder
 @AllArgsConstructor
@@ -17,5 +17,5 @@ public class UserTransactionDTO {
     private BigDecimal amount;
     private String transactionCategory;
     private String name;
-    private LocalDateTime localDateTime;
+    private LocalDate localDate;
 }

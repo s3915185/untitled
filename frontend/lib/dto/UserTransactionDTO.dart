@@ -4,7 +4,7 @@ class UserTransactionDTO {
   final double? amount;
   final String? transactionCategory;
   final String? name;
-  final DateTime? localDateTime;
+  final DateTime? localDate;
 
   UserTransactionDTO({
     this.id,
@@ -12,7 +12,7 @@ class UserTransactionDTO {
     this.amount,
     this.transactionCategory,
     this.name,
-    this.localDateTime,
+    this.localDate,
   });
 
   factory UserTransactionDTO.fromJson(Map<String, dynamic> json) {
@@ -22,8 +22,8 @@ class UserTransactionDTO {
       amount: json['amount'] != null ? (json['amount'] as num).toDouble() : null,
       transactionCategory: json['transactionCategory'] as String?,
       name: json['name'] as String?,
-      localDateTime: json['localDateTime'] != null
-          ? DateTime.tryParse(json['localDateTime'])
+      localDate: json['localDate'] != null
+          ? DateTime.tryParse(json['localDate'])
           : null,
     );
   }
@@ -34,6 +34,6 @@ class UserTransactionDTO {
     'amount': amount,
     'transactionCategory': transactionCategory,
     'name': name,
-    'localDateTime': localDateTime?.toIso8601String(),
+    'localDate': localDate?.toIso8601String(),
   };
 }
