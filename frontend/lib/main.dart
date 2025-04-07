@@ -42,7 +42,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    _authenticate(); // Authenticate when app starts
+    // _authenticate(); // Authenticate when app starts
   }
 
   Future<void> _authenticate() async {

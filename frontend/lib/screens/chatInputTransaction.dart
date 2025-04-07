@@ -20,31 +20,31 @@ class _InputTransactionState extends State<InputTransaction> {
     TransactionElement(
       DateTime(2025, 3, 8),
       "Dinner Date (Dining out)",
-      TransactionCategoryType.FOOD,
+      "Food & Dining",
       -132.00,
     ),
     TransactionElement(
       DateTime(2025, 3, 7),
       "Gym membership Renewal",
-      TransactionCategoryType.SUBSCRIPTIONS,
+      "Subscriptions & Recurring Cost",
       -450.00,
     ),
     TransactionElement(
       DateTime(2025, 3, 5),
       "Son's birthday gift",
-      TransactionCategoryType.LEISURE,
+      "Shopping & Leisure",
       -150.00,
     ),
     TransactionElement(
       DateTime(2025, 3, 2),
       "Salary M3/2025",
-      TransactionCategoryType.HOUSINGBILLS,
+      "Housing & Bills",
       7516.00,
     ),
     TransactionElement(
       DateTime(2025, 3, 1),
       "Car's Tire fix",
-      TransactionCategoryType.TRANSPORTATION,
+      "Transportation",
       -85.00,
     ),
   ];
@@ -52,7 +52,7 @@ class _InputTransactionState extends State<InputTransaction> {
   void _showTransactionInputPopup() {
     TextEditingController nameController = TextEditingController();
     TextEditingController amountController = TextEditingController();
-    TransactionCategoryType selectedCategory = TransactionCategoryType.FOOD;
+    String selectedCategory = "Food & Dining";
 
     showModalBottomSheet(
       context: context,
@@ -102,22 +102,22 @@ class _InputTransactionState extends State<InputTransaction> {
                             ),
                           ),
                         ),
-                        DropdownButton<TransactionCategoryType>(
-                          value: selectedCategory,
-                          onChanged: (TransactionCategoryType? newValue) {
-                            setModalState(() {
-                              selectedCategory = newValue!;
-                            });
-                          },
-                          items: TransactionCategoryType.values.map(
-                                (TransactionCategoryType category) {
-                              return DropdownMenuItem<TransactionCategoryType>(
-                                value: category,
-                                child: Text(category.toString().split('.').last),
-                              );
-                            },
-                          ).toList(),
-                        ),
+                        // DropdownButton<String>(
+                        //   value: selectedCategory,
+                        //   onChanged: (String? newValue) {
+                        //     setModalState(() {
+                        //       selectedCategory = newValue!;
+                        //     });
+                        //   },
+                        //   items: TransactionCategoryType.values.map(
+                        //         (TransactionCategoryType category) {
+                        //       return DropdownMenuItem<TransactionCategoryType>(
+                        //         value: category,
+                        //         child: Text(category.toString().split('.').last),
+                        //       );
+                        //     },
+                        //   ).toList(),
+                        // ),
                       ],
                     ),
                     GestureDetector(

@@ -2,22 +2,19 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:untitled/Constants.dart';
 
+import '../api/ApiClient.dart';
+import '../dto/UserInfoDTO.dart';
+
 class HomeService {
-  Future<Map<String, dynamic>?> getUserInfo(int userInfoId) async {
-    final url = Uri.parse('${Constants.baseUrl}/user-info?userInfoId=$userInfoId');
+  final ApiClient _apiClient;
 
-    try {
-      final response = await http.get(url);
+  HomeService(this._apiClient);
 
-      if (response.statusCode == 200) {
-        return json.decode(response.body);
-      } else {
-        print('Failed to load user info. Status code: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error fetching user info: $e');
-    }
-
-    return null;
+  Future<UserInfoDTO?> getUserInfo(int userInfoId) {
+    return _apiClient.getSingle(
+      '${Constants.baseUrl}/user-info',
+      queryParameters: {'userInfoId': userInfoId.toString()},
+      fromJson: (json) => UserInfoDTO.fromJson(json),
+    );
   }
 }

@@ -1,11 +1,9 @@
-import 'package:untitled/enum/TransactionCategory.dart';
-
 class TransactionElement {
   DateTime? dateTime;
   String? elementName;
-  TransactionCategoryType? transactionCategoryType;
+  String? transactionCategory;
   double? value;
 
   TransactionElement(this.dateTime, this.elementName,
-      this.transactionCategoryType, this.value);
+      this.transactionCategory, this.value);
 }

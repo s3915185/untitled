@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:untitled/dto/UserTransactionDTO.dart';
+import 'package:untitled/screens/reportsService.dart';
 import 'package:untitled/widgets/calendar/EnhancedCalendar.dart';
 import 'package:untitled/widgets/list/TransactionList.dart';
 
+import '../api/ApiClient.dart';
 import '../dto/TransactionElement.dart';
 import '../enum/TransactionCategory.dart';
 import '../layouts/BasicLayout.dart';
@@ -19,23 +22,45 @@ class ReportScreen extends StatefulWidget {
 }
 
 class _ReportScreenState extends State<ReportScreen> {
-  final List<TransactionElement> data = [
-    TransactionElement(DateTime(2025, 3, 8), "Dinner Date (Dining out)", TransactionCategoryType.FOOD, -132.00),
-    TransactionElement(DateTime(2025, 3, 7), "Gym membership Renewal", TransactionCategoryType.SUBSCRIPTIONS, -450.00),
-    TransactionElement(DateTime(2025, 3, 5), "Son's birthday gift", TransactionCategoryType.LEISURE, -150.00),
-    TransactionElement(DateTime(2025, 3, 2), "Salary M3/2025", TransactionCategoryType.HOUSINGBILLS, 7516.00),
-    TransactionElement(DateTime(2025, 3, 1), "Car's Tire fix", TransactionCategoryType.TRANSPORTATION, -85.00),
-  ];
+  late List<UserTransactionDTO>? _userTransactionList;
+  bool _isLoading = true;
+
+  late List<TransactionElement> data = [];
 
   DateTime? selectedDate;
   late DateTime currentStart;
   late DateTime currentEnd;
+
+  Future<void> _fetchUserTransaction() async {
+    final homeService = ReportService(ApiClient());
+
+    try {
+      final userTransactionList = await homeService.getUserTransactionsByUserInfoId(1);
+      setState(() {
+        _userTransactionList = userTransactionList;
+        data = _userTransactionList!.map((element) {
+          return TransactionElement(
+            element.localDateTime,
+            element.name,
+            element.transactionCategory,
+            element.amount,
+          );
+        }).toList();
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   void initState() {
     super.initState();
     currentStart = widget.dateStart;
     currentEnd = widget.dateEnd;
+    _fetchUserTransaction();
   }
 
   void _updateSelectedDate(DateTime? newDate) {

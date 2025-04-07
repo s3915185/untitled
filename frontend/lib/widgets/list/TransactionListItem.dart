@@ -65,7 +65,7 @@ class TransactionListItem extends StatelessWidget {
                   ],
                 ),
                 Text(
-                  "${TransactionCategory.getMessage(transactionElement.transactionCategoryType!)}",
+                  "${transactionElement.transactionCategory}",
                   style: TextStyle(
                     fontFamily: 'Inter - Semi - Bold',
                     color: Colors.grey,

@@ -67,7 +67,7 @@ class _TransactionListState extends State<TransactionList> {
                         transactionElement: TransactionElement(
                           element.dateTime,
                           element.elementName,
-                          element.transactionCategoryType,
+                          element.transactionCategory,
                           element.value,
                         ),
                       );
