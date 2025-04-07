@@ -15,7 +15,7 @@ class UserConfigurationController {
     }
 
     @PostMapping
-    public UserConfigurationDTO addNewConfiguration(UserConfigurationDTO newConfiguration) {
+    public UserConfigurationDTO addNewConfiguration(@RequestBody UserConfigurationDTO newConfiguration) {
         return userConfigurationService.addNewConfiguration(newConfiguration);
     }
 

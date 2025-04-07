@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:untitled/Constants.dart';
 import 'package:untitled/api/ApiClient.dart';
 import 'package:untitled/widgets/handler/PieChartHandler.dart';
 import 'package:untitled/widgets/account/AccountBadge.dart';
 import 'package:untitled/widgets/balance/BalanceDisplay.dart';
+import '../GlobalConfig.dart';
 import '../dto/UserInfoDTO.dart';
 import '../layouts/BasicLayout.dart';
 import '../widgets/message/BlockMessage.dart';
@@ -24,54 +26,54 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _fetchUserInfo();
+    // _fetchUserInfo();
   }
 
-  // Fetch user info from the API
-  Future<void> _fetchUserInfo() async {
-    final homeService = HomeService(ApiClient());
-
-    try {
-      final userInfo = await homeService.getUserInfo(1);
-      setState(() {
-        _userInfo = userInfo;
-        _isLoading = false;
-      });
-    } catch (e) {
-      setState(() {
-        _isLoading = false;
-        _errorMessage = 'Error fetching user info: $e';
-      });
-    }
-  }
+  // // Fetch user info from the API
+  // Future<void> _fetchUserInfo() async {
+  //   final homeService = HomeService(ApiClient());
+  //
+  //   try {
+  //     final userInfo = await homeService.getUserInfo(1);
+  //     setState(() {
+  //       _userInfo = userInfo;
+  //       _isLoading = false;
+  //     });
+  //   } catch (e) {
+  //     setState(() {
+  //       _isLoading = false;
+  //       _errorMessage = 'Error fetching user info: $e';
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
-    if (_isLoading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
-    }
+    final config = Provider.of<GlobalConfig>(context); // Access the config
 
-    if (_errorMessage.isNotEmpty) {
-      return Scaffold(
-        body: Center(
-          child: Text(
-            _errorMessage,
-            style: TextStyle(color: Colors.red, fontSize: 18),
-          ),
-        ),
-      );
-    }
-
-    final userName = _userInfo?.name ?? 'No Name';
+    // if (_isLoading) {
+    //   return const Scaffold(
+    //     body: Center(child: CircularProgressIndicator()),
+    //   );
+    // }
+    //
+    // if (_errorMessage.isNotEmpty) {
+    //   return Scaffold(
+    //     body: Center(
+    //       child: Text(
+    //         _errorMessage,
+    //         style: TextStyle(color: Colors.red, fontSize: 18),
+    //       ),
+    //     ),
+    //   );
+    // }
 
     return Scaffold(
       body: BasicLayout(
         childrens: [
           AccountBadge(
             imagePath: Constants.PICTURE_PERSON,
-            label: userName,
+            label: config.username,
           ),
           BalanceDisplay(
             currentBalance: 75986213,

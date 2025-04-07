@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:local_auth/local_auth.dart';
+import 'package:provider/provider.dart';
+import 'package:untitled/dto/UserConfigurationDTO.dart';
 import 'package:untitled/enum/NavBarTabType.dart';
+import 'package:untitled/mainService.dart';
 import 'package:untitled/screens/chat.dart';
 import 'package:untitled/screens/chatInputTransaction.dart';
 import 'package:untitled/screens/home.dart';
@@ -11,6 +14,9 @@ import 'package:untitled/screens/settings.dart';
 import 'package:untitled/utils/DateTimeUtils.dart';
 import 'package:untitled/widgets/navbar/navBar.dart';
 import 'package:animations/animations.dart';
+
+import 'GlobalConfig.dart';
+import 'api/ApiClient.dart';
 
 void main() {
   SystemChrome.setSystemUIOverlayStyle(
@@ -23,7 +29,7 @@ void main() {
     ),
   );
 
-  runApp(const MyApp());
+  runApp(ChangeNotifierProvider(create: (_) => GlobalConfig(), child: MyApp()));
 }
 
 final GlobalKey<_MyHomePageState> homePageKey = GlobalKey<_MyHomePageState>();
@@ -38,11 +44,37 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   final LocalAuthentication auth = LocalAuthentication();
   bool _isAuthenticated = false;
+  late UserConfigurationDTO? _userConfigurationDTO;
+  bool _isLoading = true;
+  String _errorMessage = '';
 
   @override
   void initState() {
     super.initState();
     // _authenticate(); // Authenticate when app starts
+    _fetchUserConfiguration();
+  }
+
+  Future<void> _fetchUserConfiguration() async {
+    final homeService = Mainservice(ApiClient());
+
+    try {
+      final userConfiguration = await homeService.getUserConfiguration(1);
+      setState(() {
+        _userConfigurationDTO = userConfiguration;
+        Provider.of<GlobalConfig>(context, listen: false).setConfig(
+          _userConfigurationDTO!.name!,
+          _userConfigurationDTO!.id!,
+          _userConfigurationDTO!.categories!,
+        );
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _errorMessage = 'Error fetching user info: $e';
+      });
+    }
   }
 
   Future<void> _authenticate() async {
@@ -112,20 +144,12 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     dateStart = DateTimeUtils.getFirstDateOfMonth(
-      DateTime
-          .now()
-          .year,
-      DateTime
-          .now()
-          .month,
+      DateTime.now().year,
+      DateTime.now().month,
     );
     dateEnd = DateTimeUtils.getLastDateOfMonth(
-      DateTime
-          .now()
-          .year,
-      DateTime
-          .now()
-          .month,
+      DateTime.now().year,
+      DateTime.now().month,
     );
 
     _screens = {

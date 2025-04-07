@@ -1,6 +1,5 @@
 package com.example.mcp_untitled_server.userConfiguration;
 
-import com.example.mcp_untitled_server.utils.CategoriesListConverter;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -23,7 +22,6 @@ class UserConfiguration {
     @Column(name = "USER_INFO_ID")
     private Long userInfoId;
 
-    @Column(name = "CATEGORIES", columnDefinition = "jsonb")
-    @Convert(converter = CategoriesListConverter.class)
-    private List<String> categories;
+    @Column(name = "CATEGORIES", length = Integer.MAX_VALUE)
+    private String categories;
 }

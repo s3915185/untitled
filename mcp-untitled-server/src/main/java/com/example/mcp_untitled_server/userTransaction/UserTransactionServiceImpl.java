@@ -1,5 +1,7 @@
 package com.example.mcp_untitled_server.userTransaction;
 
+import com.example.mcp_untitled_server.userConfiguration.UserConfigurationDTO;
+import com.example.mcp_untitled_server.userConfiguration.UserConfigurationGlobalService;
 import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -10,20 +12,47 @@ import java.util.stream.Collectors;
 @Service
 class UserTransactionServiceImpl implements UserTransactionService {
     private final UserTransactionRepository userTransactionRepository;
+    private final UserConfigurationGlobalService userConfigurationGlobalService;
 
     @Autowired
-    public UserTransactionServiceImpl(UserTransactionRepository userTransactionRepository) {
+    public UserTransactionServiceImpl(UserTransactionRepository userTransactionRepository,
+                                      UserConfigurationGlobalService userConfigurationGlobalService) {
         this.userTransactionRepository = userTransactionRepository;
+        this.userConfigurationGlobalService = userConfigurationGlobalService;
     }
 
     @Override
     public UserTransactionDTO addNewOneTransaction(UserTransactionDTO transaction) {
+        UserConfigurationDTO userConfigurationDTO = userConfigurationGlobalService
+                .getConfigurationByUserInfoId(transaction.getUserInfoId());
+
+        List<String> categories = userConfigurationDTO.getCategories();
+        String transactionCategory = transaction.getTransactionCategory();
+        boolean categoryAllowed = categories.contains(transactionCategory);
+
+        if (!categoryAllowed) {
+            throw new IllegalArgumentException("Transaction category '" + transactionCategory + "' is not allowed for this user.");
+        }
+
         return UserTransactionMapper.INSTANCE.toDto(
-                userTransactionRepository.save(UserTransactionMapper.INSTANCE.toEntity(transaction)));
+                userTransactionRepository.save(
+                        UserTransactionMapper.INSTANCE.toEntity(transaction)
+                )
+        );
     }
 
     @Override
     public List<UserTransactionDTO> addListOfTransactions(List<UserTransactionDTO> transactionDTOList) {
+        UserConfigurationDTO userConfigurationDTO = userConfigurationGlobalService
+                .getConfigurationByUserInfoId(1L);
+        List<String> categories = userConfigurationDTO.getCategories();
+
+        boolean categoryAllowed = transactionDTOList.stream()
+                .anyMatch(userTransactionDTO -> !categories.contains(userTransactionDTO.getTransactionCategory()));
+
+        if (!categoryAllowed) {
+            throw new IllegalArgumentException("There are some categories are not allowed for this user.");
+        }
         return userTransactionRepository.saveAll(transactionDTOList.stream()
                         .map(UserTransactionMapper.INSTANCE::toEntity).toList())
                 .stream().map(UserTransactionMapper.INSTANCE::toDto).toList();

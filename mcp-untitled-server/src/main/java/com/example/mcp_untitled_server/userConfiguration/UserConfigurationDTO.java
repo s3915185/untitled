@@ -17,5 +17,6 @@ import java.util.List;
 public class UserConfigurationDTO {
     private Long id;
     private Long userInfoId;
+    private String name;
     private List<String> categories;
 }
