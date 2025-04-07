@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:provider/provider.dart';
 import 'package:untitled/Constants.dart';
 import 'package:untitled/dto/TransactionElement.dart';
 import 'package:untitled/layouts/BasicLayout.dart';
 import 'package:untitled/utils/ImageUtils.dart';
 
+import '../GlobalConfig.dart';
 import '../enum/NavBarTabType.dart';
 import '../enum/TransactionCategory.dart';
 import '../main.dart';
@@ -50,9 +52,10 @@ class _InputTransactionState extends State<InputTransaction> {
   ];
 
   void _showTransactionInputPopup() {
+    final config = Provider.of<GlobalConfig>(context, listen: false);
     TextEditingController nameController = TextEditingController();
     TextEditingController amountController = TextEditingController();
-    String selectedCategory = "Food & Dining";
+    String selectedCategory = config.categories.isEmpty ? "new category" : config.categories.first;
 
     showModalBottomSheet(
       context: context,
@@ -102,22 +105,22 @@ class _InputTransactionState extends State<InputTransaction> {
                             ),
                           ),
                         ),
-                        // DropdownButton<String>(
-                        //   value: selectedCategory,
-                        //   onChanged: (String? newValue) {
-                        //     setModalState(() {
-                        //       selectedCategory = newValue!;
-                        //     });
-                        //   },
-                        //   items: TransactionCategoryType.values.map(
-                        //         (TransactionCategoryType category) {
-                        //       return DropdownMenuItem<TransactionCategoryType>(
-                        //         value: category,
-                        //         child: Text(category.toString().split('.').last),
-                        //       );
-                        //     },
-                        //   ).toList(),
-                        // ),
+                        DropdownButton<String>(
+                          value: selectedCategory,
+                          onChanged: (String? newValue) {
+                            setModalState(() {
+                              selectedCategory = newValue!;
+                            });
+                          },
+                          items: config.categories.map(
+                                (String category) {
+                              return DropdownMenuItem<String>(
+                                value: category,
+                                child: Text(category.toString().split('.').last),
+                              );
+                            },
+                          ).toList(),
+                        ),
                       ],
                     ),
                     GestureDetector(
