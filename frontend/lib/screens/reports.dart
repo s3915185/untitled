@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:untitled/dto/DoublePair.dart';
 import 'package:untitled/dto/UserTransactionCalendarDTO.dart';
 import 'package:untitled/dto/UserTransactionDTO.dart';
 import 'package:untitled/screens/reportsService.dart';
@@ -26,7 +27,7 @@ class _ReportScreenState extends State<ReportScreen> {
   bool _isLoading = true;
 
   late List<TransactionElement> _userTransactionListData = [];
-  late Map<int, double> _userTransactionCalendarListData = {
+  late Map<int, DoublePair> _userTransactionCalendarListData = {
     // 1: 200,
     // 6: -34.21,
     // 7: 392.12,
@@ -86,7 +87,7 @@ class _ReportScreenState extends State<ReportScreen> {
           userTransactionCalendarList!.map(
             (element) => MapEntry(
               element.date!.day,
-              element.upAmount! + element.downAmount!,
+              DoublePair(element.upAmount!, element.downAmount!)
             ),
           ),
         );

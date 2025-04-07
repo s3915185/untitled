@@ -8,11 +8,14 @@ import '../../utils/ImageUtils.dart';
 
 class CalendarHeader extends StatefulWidget {
   final DateTime currentMonth;
+  final double? upAmount;
+  final double? downAmount;
   final Function(DateTime) onMonthChanged;
 
   const CalendarHeader({
     Key? key,
     required this.currentMonth,
+    required this.upAmount, required this.downAmount,
     required this.onMonthChanged,
   }) : super(key: key);
 
@@ -101,9 +104,9 @@ class _CalendarHeaderState extends State<CalendarHeader> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _buildTransactionInfo(ElementCategoryType.INCOME, 450.00),
+        _buildTransactionInfo(ElementCategoryType.INCOME, widget.upAmount!),
         _buildDateSelectionHandler(),
-        _buildTransactionInfo(ElementCategoryType.SPENDING, 230.00),
+        _buildTransactionInfo(ElementCategoryType.SPENDING, widget.downAmount!),
       ],
     );
   }
