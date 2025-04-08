@@ -10,13 +10,14 @@ class TransactionList extends StatefulWidget {
   final DateTime? dateEnd;
   final List<TransactionElement> data;
   final bool isEdit;
+  final Function(int?) onItemDeleted;
 
   const TransactionList({
     Key? key,
     required this.dateStart,
     required this.dateEnd,
     required this.data,
-    required this.isEdit,
+    required this.isEdit, required this.onItemDeleted,
   }) : super(key: key);
 
   @override
@@ -24,11 +25,6 @@ class TransactionList extends StatefulWidget {
 }
 
 class _TransactionListState extends State<TransactionList> {
-  void _deleteTransaction(int index) {
-    setState(() {
-      widget.data.removeAt(index);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,13 +54,18 @@ class _TransactionListState extends State<TransactionList> {
                           padding: const EdgeInsets.symmetric(horizontal: 20),
                           child: const Icon(Icons.delete, color: Colors.white),
                         ),
-                        onDismissed: (direction) => _deleteTransaction(index),
+                        onDismissed: (direction) {
+                          Future.microtask(() {
+                            widget.onItemDeleted(element.id);
+                          });
+                        },
                         child: TransactionListItem(transactionElement: element),
                       );
                     }).toList()
                     : widget.data.map((element) {
                       return TransactionListItem(
                         transactionElement: TransactionElement(
+                          element.id,
                           element.dateTime,
                           element.elementName,
                           element.transactionCategory,

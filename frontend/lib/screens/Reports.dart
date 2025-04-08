@@ -61,6 +61,7 @@ class _ReportScreenState extends State<ReportScreen> {
         _userTransactionListData =
             userTransactionList!.map((element) {
               return TransactionElement(
+                element.id,
                 element.localDate,
                 element.name,
                 element.transactionCategory,
@@ -155,6 +156,7 @@ class _ReportScreenState extends State<ReportScreen> {
             dateEnd: _getDate(false),
             data: _userTransactionListData,
             isEdit: false,
+            onItemDeleted: (int? id) {},
           ),
         ],
       ),

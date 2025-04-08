@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 import 'package:provider/provider.dart';
 import 'package:untitled/Constants.dart';
 import 'package:untitled/dto/TransactionElement.dart';
+import 'package:untitled/dto/UserTransactionDTO.dart';
 import 'package:untitled/layouts/BasicLayout.dart';
 import 'package:untitled/screens/ChatInputTransactionService.dart';
 import 'package:untitled/utils/ImageUtils.dart';
@@ -23,7 +24,6 @@ class _InputTransactionState extends State<InputTransaction> {
   final chatInputTransactionService = ChatInputTransactionService(ApiClient());
   late List<TransactionElement> data = [];
 
-
   @override
   void initState() {
     super.initState();
@@ -31,7 +31,6 @@ class _InputTransactionState extends State<InputTransaction> {
   }
 
   Future<void> _getUserTransactions() async {
-
     try {
       final userTransactionList = await chatInputTransactionService
           .getUserTransactionsByUserInfoId(1);
@@ -39,6 +38,7 @@ class _InputTransactionState extends State<InputTransaction> {
         data =
             userTransactionList!.map((element) {
               return TransactionElement(
+                element.id,
                 element.localDate,
                 element.name,
                 element.transactionCategory,
@@ -47,7 +47,47 @@ class _InputTransactionState extends State<InputTransaction> {
             }).toList();
       });
     } catch (e) {
+      setState(() {});
+    }
+  }
+
+  Future<void> _addNewOneTransaction(
+    double amount,
+    DateTime localDate,
+    String name,
+    String category,
+    int userInfoId,
+  ) async {
+    try {
+      UserTransactionDTO userTransactionDTO = UserTransactionDTO(
+        userInfoId: 1,
+        transactionCategory: category,
+        name: name,
+        localDate: localDate,
+        amount: -amount,
+      );
+      final userTransactionData = await chatInputTransactionService
+          .postSingleTransaction(userTransactionDTO.toJson());
       setState(() {
+        data.add(TransactionElement(
+          userTransactionData!.id,
+          userTransactionData.localDate,
+          userTransactionData.name,
+          userTransactionData.transactionCategory,
+          userTransactionData.amount,
+        ));
+      });
+    } catch (e) {
+      setState(() {});
+    }
+  }
+
+  Future<void> _deleteTransaction(int? index) async {
+    final userTransactionData = await chatInputTransactionService
+        .deleteSingleTransaction(index!);
+    if (userTransactionData!) {
+      setState(() {
+        data.removeWhere((item) => item.id == index);
       });
     }
   }
@@ -56,7 +96,8 @@ class _InputTransactionState extends State<InputTransaction> {
     final config = Provider.of<GlobalConfig>(context, listen: false);
     TextEditingController nameController = TextEditingController();
     TextEditingController amountController = TextEditingController();
-    String selectedCategory = config.categories.isEmpty ? "new category" : config.categories.first;
+    String selectedCategory =
+        config.categories.isEmpty ? "new category" : config.categories.first;
     DateTime selectedDate = DateTime.now();
 
     showModalBottomSheet(
@@ -114,14 +155,15 @@ class _InputTransactionState extends State<InputTransaction> {
                               selectedCategory = newValue!;
                             });
                           },
-                          items: config.categories.map(
-                                (String category) {
-                              return DropdownMenuItem<String>(
-                                value: category,
-                                child: Text(category.toString().split('.').last),
-                              );
-                            },
-                          ).toList(),
+                          items:
+                              config.categories.map((String category) {
+                                return DropdownMenuItem<String>(
+                                  value: category,
+                                  child: Text(
+                                    category.toString().split('.').last,
+                                  ),
+                                );
+                              }).toList(),
                         ),
                         SizedBox(height: 10),
                         GestureDetector(
@@ -157,16 +199,13 @@ class _InputTransactionState extends State<InputTransaction> {
                     GestureDetector(
                       behavior: HitTestBehavior.opaque,
                       onTap: () {
-                        setState(() {
-                          data.add(
-                            TransactionElement(
-                              selectedDate,
-                              nameController.text,
-                              selectedCategory,
-                              double.tryParse(amountController.text) ?? 0.0,
-                            ),
-                          );
-                        });
+                        _addNewOneTransaction(
+                          double.tryParse(amountController.text) ?? 0.0,
+                          selectedDate,
+                          nameController.text,
+                          selectedCategory,
+                          1,
+                        );
                         Navigator.pop(context);
                       },
                       child: Row(
@@ -268,6 +307,7 @@ class _InputTransactionState extends State<InputTransaction> {
             dateEnd: null,
             data: data,
             isEdit: true,
+            onItemDeleted: _deleteTransaction,
           ),
         ],
       ),

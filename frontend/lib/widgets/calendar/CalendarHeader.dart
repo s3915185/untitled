@@ -27,6 +27,7 @@ class _CalendarHeaderState extends State<CalendarHeader> {
   Widget _buildTransactionInfo(
     ElementCategoryType elementCategory,
     double value,
+      bool isStart,
   ) {
     String assetPath =
         elementCategory == ElementCategoryType.INCOME
@@ -37,15 +38,18 @@ class _CalendarHeaderState extends State<CalendarHeader> {
         elementCategory == ElementCategoryType.INCOME
             ? Constants.COLOR_STRONG_BLUE
             : Color.fromARGB(255, 248, 156, 51);
-    return Row(
-      spacing: 10,
-      children: [
-        ImageUtils.formatSvg(assetPath, 24, color: color),
-        Text(
-          "$value",
-          style: TextStyle(fontFamily: 'Inter', fontSize: 12, color: color),
-        ),
-      ],
+    return Expanded(
+      child: Row(
+        spacing: 10,
+        mainAxisAlignment: isStart ? MainAxisAlignment.start : MainAxisAlignment.end,
+        children: [
+          ImageUtils.formatSvg(assetPath, 24, color: color),
+          Text(
+            "$value",
+            style: TextStyle(fontFamily: 'Inter', fontSize: 12, color: color),
+          ),
+        ],
+      ),
     );
   }
 
@@ -104,9 +108,9 @@ class _CalendarHeaderState extends State<CalendarHeader> {
       crossAxisAlignment: CrossAxisAlignment.center,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        _buildTransactionInfo(ElementCategoryType.INCOME, widget.upAmount!),
+        _buildTransactionInfo(ElementCategoryType.INCOME, widget.upAmount!, true),
         _buildDateSelectionHandler(),
-        _buildTransactionInfo(ElementCategoryType.SPENDING, widget.downAmount!),
+        _buildTransactionInfo(ElementCategoryType.SPENDING, widget.downAmount!, false),
       ],
     );
   }
