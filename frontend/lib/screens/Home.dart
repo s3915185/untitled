@@ -9,7 +9,7 @@ import '../GlobalConfig.dart';
 import '../dto/UserInfoDTO.dart';
 import '../layouts/BasicLayout.dart';
 import '../widgets/message/BlockMessage.dart';
-import 'homeService.dart';
+import 'HomeService.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});

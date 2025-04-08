@@ -4,9 +4,11 @@ import 'package:provider/provider.dart';
 import 'package:untitled/Constants.dart';
 import 'package:untitled/dto/TransactionElement.dart';
 import 'package:untitled/layouts/BasicLayout.dart';
+import 'package:untitled/screens/ChatInputTransactionService.dart';
 import 'package:untitled/utils/ImageUtils.dart';
 
 import '../GlobalConfig.dart';
+import '../api/ApiClient.dart';
 import '../enum/NavBarTabType.dart';
 import '../enum/TransactionCategory.dart';
 import '../main.dart';
@@ -18,44 +20,44 @@ class InputTransaction extends StatefulWidget {
 }
 
 class _InputTransactionState extends State<InputTransaction> {
-  List<TransactionElement> data = [
-    TransactionElement(
-      DateTime(2025, 3, 8),
-      "Dinner Date (Dining out)",
-      "Food & Dining",
-      -132.00,
-    ),
-    TransactionElement(
-      DateTime(2025, 3, 7),
-      "Gym membership Renewal",
-      "Subscriptions & Recurring Cost",
-      -450.00,
-    ),
-    TransactionElement(
-      DateTime(2025, 3, 5),
-      "Son's birthday gift",
-      "Shopping & Leisure",
-      -150.00,
-    ),
-    TransactionElement(
-      DateTime(2025, 3, 2),
-      "Salary M3/2025",
-      "Housing & Bills",
-      7516.00,
-    ),
-    TransactionElement(
-      DateTime(2025, 3, 1),
-      "Car's Tire fix",
-      "Transportation",
-      -85.00,
-    ),
-  ];
+  final chatInputTransactionService = ChatInputTransactionService(ApiClient());
+  late List<TransactionElement> data = [];
+
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserTransactions();
+  }
+
+  Future<void> _getUserTransactions() async {
+
+    try {
+      final userTransactionList = await chatInputTransactionService
+          .getUserTransactionsByUserInfoId(1);
+      setState(() {
+        data =
+            userTransactionList!.map((element) {
+              return TransactionElement(
+                element.localDate,
+                element.name,
+                element.transactionCategory,
+                element.amount,
+              );
+            }).toList();
+      });
+    } catch (e) {
+      setState(() {
+      });
+    }
+  }
 
   void _showTransactionInputPopup() {
     final config = Provider.of<GlobalConfig>(context, listen: false);
     TextEditingController nameController = TextEditingController();
     TextEditingController amountController = TextEditingController();
     String selectedCategory = config.categories.isEmpty ? "new category" : config.categories.first;
+    DateTime selectedDate = DateTime.now();
 
     showModalBottomSheet(
       context: context,
@@ -121,6 +123,35 @@ class _InputTransactionState extends State<InputTransaction> {
                             },
                           ).toList(),
                         ),
+                        SizedBox(height: 10),
+                        GestureDetector(
+                          onTap: () async {
+                            final DateTime? picked = await showDatePicker(
+                              context: context,
+                              initialDate: selectedDate,
+                              firstDate: DateTime(2000),
+                              lastDate: DateTime(2100),
+                            );
+                            if (picked != null && picked != selectedDate) {
+                              setModalState(() {
+                                selectedDate = picked;
+                              });
+                            }
+                          },
+                          child: Row(
+                            children: [
+                              Icon(Icons.calendar_today, size: 18),
+                              SizedBox(width: 8),
+                              Text(
+                                "${selectedDate.toLocal()}".split(' ')[0],
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  fontFamily: 'Inter',
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
                       ],
                     ),
                     GestureDetector(
@@ -129,7 +160,7 @@ class _InputTransactionState extends State<InputTransaction> {
                         setState(() {
                           data.add(
                             TransactionElement(
-                              DateTime.now(),
+                              selectedDate,
                               nameController.text,
                               selectedCategory,
                               double.tryParse(amountController.text) ?? 0.0,
@@ -233,8 +264,8 @@ class _InputTransactionState extends State<InputTransaction> {
             ],
           ),
           TransactionList(
-            dateStart: DateTime.now(),
-            dateEnd: DateTime.now(),
+            dateStart: null,
+            dateEnd: null,
             data: data,
             isEdit: true,
           ),
