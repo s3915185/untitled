@@ -16,7 +16,12 @@ class UserTransactionController {
         this.userTransactionService = userTransactionService;
     }
 
-    @PostMapping
+    @PostMapping("/add-one")
+    public UserTransactionDTO addNewOneTransaction(@RequestBody UserTransactionDTO transaction) {
+        return userTransactionService.addNewOneTransaction(transaction);
+    }
+
+    @PostMapping("/add-list")
     public List<UserTransactionDTO> addListOfTransactions(@RequestBody List<UserTransactionDTO> transactionDTOList) {
         return userTransactionService.addListOfTransactions(transactionDTOList);
     }
@@ -48,5 +53,10 @@ class UserTransactionController {
         LocalDate dateEnd = LocalDate.parse(dateStartEnd);
 
         return userTransactionService.getListOfTransactionByUserInfoIdAndPeriods(userInfoId, dateStart, dateEnd);
+    }
+
+    @DeleteMapping
+    public boolean deleteOneTransactionById(@RequestParam("id") Long id) {
+        return userTransactionService.deleteOneTransactionById(id);
     }
 }
