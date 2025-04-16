@@ -1,0 +1,4 @@
+package com.example.mcp_untitled_server.domain.transactionPlan.monthlyFinancialSummary;
+
+interface MonthlyFinancialSummaryService extends MonthlyFinancialSummaryGlobalService {
+}
